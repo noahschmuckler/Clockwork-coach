@@ -19,6 +19,20 @@ Hi. I'm changing the plan for the Audio Workout Coach. Here is what changed, and
 
 You do not need: an ElevenLabs key, Python, FFmpeg, a server, a phone app, or any paid service.
 
+## First, tell me what you can do
+
+Please answer these before I build anything, because the design depends on them:
+
+1. Can you make authenticated HTTPS API calls (custom headers, JSON body) using a secret you store securely? This is the preferred route.
+2. Do you have a browser you can drive? If so:
+   - Can it stay logged in to a site between sessions?
+   - Can it fill in and submit web forms?
+   - When you download a file, where does it go, and can you send that file or its link on to me?
+3. Can you poll something on a schedule, such as checking every minute for 20 minutes, or do you need a callback?
+4. How can you reach me: text, email, or something else? Is there a file-size limit?
+
+**If you can only use a browser:** don't use my GitHub login. I'll create a separate free GitHub account for you and add it to the repo as a collaborator. You'd start a render from the repo's Actions tab ("render" → "Run workflow"), enter the same inputs listed below, then open the Releases page and send me the link to `workout.m4a`. The API route below is still the better choice if you can make API calls, because it's faster and less fragile than clicking through pages.
+
 ## How to request a workout (contract, subject to small changes once built)
 
 **1. Start the render:**
