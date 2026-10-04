@@ -46,13 +46,47 @@ def _tight_trim(audio: np.ndarray, below_peak_db: float = 30.0) -> np.ndarray:
     return audio[loud[0] * f: (loud[-1] + 1) * f]
 
 
+def _split_words(audio: np.ndarray, n: int, below_peak_db: float = 32.0) -> list[np.ndarray] | None:
+    """Split speech into n pieces at its quietest gaps; None if it doesn't have n clear parts."""
+    f = int(0.01 * SAMPLE_RATE)
+    frames = len(audio) // f
+    rms = np.sqrt(np.mean(audio[: frames * f].reshape(frames, f) ** 2, axis=1))
+    voiced = rms >= rms.max() * 10 ** (-below_peak_db / 20)
+    runs, i = [], 0
+    while i < frames:
+        if voiced[i]:
+            j = i
+            while j < frames and voiced[j]:
+                j += 1
+            runs.append([i, j])
+            i = j
+        else:
+            i += 1
+    # Join runs split by tiny dips (under 50 ms) and drop clicks (under 50 ms).
+    merged = []
+    for r in runs:
+        if merged and r[0] - merged[-1][1] < 5:
+            merged[-1][1] = r[1]
+        else:
+            merged.append(r)
+    merged = [r for r in merged if r[1] - r[0] >= 5]
+    # Too many pieces: join across the shortest gaps until there are n.
+    while len(merged) > n:
+        k = min(range(len(merged) - 1), key=lambda k: merged[k + 1][0] - merged[k][1])
+        merged[k][1] = merged.pop(k + 1)[1]
+    if len(merged) != n:
+        return None
+    pad = 2  # 20 ms either side
+    return [audio[max(0, a - pad) * f: min(frames, b + pad) * f].copy() for a, b in merged]
+
+
 def _fit(audio: np.ndarray, seconds: float) -> np.ndarray:
     """Speed a clip up (pitch unchanged) so it lasts at most `seconds`."""
     if len(audio) <= seconds * SAMPLE_RATE:
         return audio
     tempo = len(audio) / (seconds * SAMPLE_RATE) * 1.02
     if tempo > 2.0:
-        raise RuntimeError(f"countdown word is {len(audio) / SAMPLE_RATE:.2f}s, too long to fit in {seconds}s")
+        raise RuntimeError(f"countdown audio is {len(audio) / SAMPLE_RATE:.2f}s, can't fit it to {seconds:.2f}s")
     raw = subprocess.run(
         ["ffmpeg", "-v", "error", "-f", "f32le", "-ar", str(SAMPLE_RATE), "-ac", "1", "-i", "-",
          "-af", f"atempo={tempo:.4f}", "-f", "f32le", "-"],
@@ -90,6 +124,7 @@ class Speaker:
         self.backend = backend
         self.voice = {"piper": PIPER_VOICE, "espeak": "espeak-ng en-us+m3", "tone": "test-tone"}[backend]
         self._piper = None
+        self.warnings: list[str] = []
         settings = f"{self.voice}|{PIPER_LENGTH_SCALE}|{PIPER_NOISE_SCALE}|{PIPER_NOISE_W_SCALE}|{VOICE_PEAK}"
         self.cache = CACHE_DIR / "tts" / hashlib.sha1(settings.encode()).hexdigest()[:12]
 
@@ -104,14 +139,27 @@ class Speaker:
         return _read_wav(path)
 
     def countdown(self, words: list[str]) -> np.ndarray:
-        """One word per second ("Five." "Four." ...), each starting exactly on its second."""
+        """One word per second ("Five" "Four" ...), each starting exactly on its second.
+
+        Neural voices garble single words spoken on their own, so the countdown is
+        spoken as one sentence ("Five, four, three, two, one.") and split at the
+        pauses between words. If the split doesn't find one piece per word, the
+        whole sentence is used as-is (sped up if needed) and a warning is recorded.
+        """
         step = SAMPLE_RATE
-        parts = []
-        for w in words:
-            raw = self.say(w)
-            p = _fit(_tight_trim(raw), COUNTDOWN_WORD_SECONDS)
-            print(f"countdown {w!r}: {len(raw) / step:.2f}s -> {len(p) / step:.2f}s")
-            parts.append(p)
+        sentence = ", ".join(w.rstrip(".").lower() for w in words).capitalize() + "."
+        audio = self.say(sentence)
+        pieces = _split_words(audio, len(words))
+        if pieces is None:
+            # Still a countdown ending by the target, just not one word per exact second.
+            msg = f"countdown could not be split into {len(words)} words; numbers are not exactly on the second"
+            print(msg)
+            if msg not in self.warnings:
+                self.warnings.append(msg)
+            span = (len(words) - 1) + COUNTDOWN_WORD_SECONDS
+            return _fit(_tight_trim(audio), span)
+        parts = [_fit(p, COUNTDOWN_WORD_SECONDS) for p in pieces]
+        print("countdown words: " + ", ".join(f"{len(a) / step:.2f}s->{len(b) / step:.2f}s" for a, b in zip(pieces, parts)))
         out = np.zeros(step * (len(words) - 1) + len(parts[-1]), dtype=np.float32)
         for k, p in enumerate(parts):
             out[k * step: k * step + len(p)] = p
@@ -119,10 +167,14 @@ class Speaker:
 
     def _synthesize(self, text: str) -> np.ndarray:
         if self.backend == "tone":
-            # Stand-in for tests: ~14 characters per second, like real speech.
-            n = int(SAMPLE_RATE * max(0.5, len(text) / 14))
-            t = np.arange(n) / SAMPLE_RATE
-            return (0.5 * np.sin(2 * np.pi * 220 * t)).astype(np.float32)
+            # Stand-in for tests: ~14 characters per second, like real speech,
+            # with a short pause at each comma.
+            parts = []
+            for phrase in text.split(", "):
+                n = int(SAMPLE_RATE * max(0.3, len(phrase) / 14))
+                t = np.arange(n) / SAMPLE_RATE
+                parts += [(0.5 * np.sin(2 * np.pi * 220 * t)).astype(np.float32), np.zeros(int(0.2 * SAMPLE_RATE), np.float32)]
+            return np.concatenate(parts[:-1])
         if self.backend == "espeak":
             with tempfile.TemporaryDirectory() as tmp:
                 out = Path(tmp) / "x.wav"

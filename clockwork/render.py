@@ -45,6 +45,7 @@ def render(request: dict, out_dir: Path, label: str, tts_backend: str = "piper",
                 warnings.append(f"no music available for: {', '.join(missing)}")
         else:
             warnings.append("music could not be downloaded; this file is voice only")
+    warnings += speaker.warnings
     master = mixer.mix(voice, bed, placed)
 
     filename = f"clockwork-{label}.m4a"
