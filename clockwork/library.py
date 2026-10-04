@@ -35,6 +35,8 @@ class Block:
     intro: str
     easier: str
     cues: tuple[Cue, ...]
+    switch: str  # spoken exactly at the halfway point ("Switch sides."), or ""
+    countdown: bool  # "Five ... One" landing exactly on the switch and on the block end
     tags: dict = field(hash=False, compare=False)
 
     def allows(self, seconds: int) -> bool:
@@ -76,7 +78,7 @@ def _parse_block(raw: dict, source: str) -> Block:
     for key in ("id", "name", "role", "families", "seconds", "intro", "tags"):
         if key not in raw:
             raise LibraryError(f"{where} is missing '{key}'")
-    unknown = set(raw) - {"id", "name", "role", "families", "seconds", "intro", "easier", "cues", "tags"}
+    unknown = set(raw) - {"id", "name", "role", "families", "seconds", "intro", "easier", "cues", "switch", "countdown", "tags"}
     if unknown:
         raise LibraryError(f"{where} has unknown fields {sorted(unknown)}")
     if raw["role"] not in ROLES:
@@ -93,12 +95,21 @@ def _parse_block(raw: dict, source: str) -> Block:
         raise LibraryError(f"{where} has an invalid seconds range {lo}-{hi}")
     cues = []
     for c in raw.get("cues") or []:
+        if not isinstance(c, dict) or set(c) != {"at", "text"}:
+            # Usually an unquoted comma inside {at: .., text: ..}: quote the text.
+            raise LibraryError(f"{where} has a malformed cue {c!r}; quote text that contains commas")
         at = c["at"]
         if not (at == "half" or isinstance(at, int)):
             raise LibraryError(f"{where} cue 'at' must be an integer or 'half', got {at!r}")
         if not str(c.get("text", "")).strip():
             raise LibraryError(f"{where} has a cue with no text")
         cues.append(Cue(at=at, text=str(c["text"]).strip()))
+    switch = str(raw.get("switch") or "").strip()
+    countdown = raw.get("countdown", False)
+    if not isinstance(countdown, bool):
+        raise LibraryError(f"{where}: countdown must be true or false")
+    if countdown and lo < (40 if switch else 30):
+        raise LibraryError(f"{where}: a countdown needs a minimum of {40 if switch else 30} seconds")
     if raw["role"] not in ("session", "rest") and not str(raw["name"]).strip():
         raise LibraryError(f"{where} needs a spoken name")
     return Block(
@@ -111,6 +122,8 @@ def _parse_block(raw: dict, source: str) -> Block:
         intro=str(raw["intro"] or "").strip(),
         easier=str(raw.get("easier") or "").strip(),
         cues=tuple(cues),
+        switch=switch,
+        countdown=countdown,
         tags=tags,
     )
 

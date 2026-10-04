@@ -1,6 +1,6 @@
 import pytest
 
-from clockwork import cues, library, planner, request
+from clockwork import cues, library, planner, render, request
 from clockwork.library import LibraryError
 from clockwork.tts import SAMPLE_RATE, Speaker
 
@@ -76,12 +76,53 @@ def test_cues_fit_without_overlap(template):
     speaker = Speaker("tone")
     for seed in range(5):
         plan = planner.expand_template(LIB, template, seed)
-        cands = cues.candidates(plan)
-        durations = {c.text: len(speaker.say(c.text)) / SAMPLE_RATE for c in cands}
-        placed, _ = cues.place(cands, durations)
+        placed, _ = _place(speaker, plan)
         for cue in placed:
             item = plan[cue.block_index]
             assert item.start <= cue.time and cue.end <= item.end
         # Every block boundary is announced.
         starts = {c.block_index for c in placed if c.kind == "start"}
         assert starts == set(range(len(plan)))
+
+
+def _place(speaker, plan):
+    cands = cues.candidates(plan)
+    clips = render.speak_all(speaker, {c.text for c in cands})
+    return cues.place(cands, {t: len(a) / SAMPLE_RATE for t, a in clips.items()})
+
+
+@pytest.mark.parametrize("template", sorted(LIB.templates))
+def test_switch_and_countdown_land_exactly(template):
+    speaker = Speaker("tone")
+    for seed in range(5):
+        plan = planner.expand_template(LIB, template, seed)
+        placed, dropped = _place(speaker, plan)
+        for i, item in enumerate(plan):
+            b = item.block
+            mine = [c for c in placed if c.block_index == i]
+            if b.switch:
+                assert [c.time for c in mine if c.kind == "switch"] == [item.start + item.seconds / 2]
+            if b.countdown:
+                targets = ([item.seconds / 2] if b.switch else []) + [item.seconds]
+                counts = [c for c in mine if c.kind == "countdown"]
+                assert [c.time for c in counts] == [item.start + t - cues.COUNTDOWN_SECONDS for t in targets]
+                assert all(c.end <= c.time + cues.COUNTDOWN_SECONDS for c in counts)
+
+
+@pytest.mark.parametrize("template", sorted(LIB.templates))
+def test_choreographed_lines_are_never_dropped(template):
+    # Sun salutations and mobility stretches are sequences: losing a line breaks them.
+    speaker = Speaker("tone")
+    for seed in range(10):
+        plan = planner.expand_template(LIB, template, seed)
+        _, dropped = _place(speaker, plan)
+        for d in dropped:
+            item = next(i for i in plan if i.start <= d["time"] < i.end)
+            if {"flow", "mobility"} & set(item.block.families):
+                assert d["kind"] not in ("authored", "heads-up"), (item.block.id, d)
+
+
+def test_flex_never_repeats_a_flow():
+    for seed in range(50):
+        flows = [i.block.id for i in planner.expand_template(LIB, "flex-45", seed) if "flow" in i.block.families]
+        assert len(flows) == 2 and len(set(flows)) == 2

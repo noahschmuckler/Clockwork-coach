@@ -20,7 +20,8 @@ request → template + seed → plan (validated: exactly 2700 s, warm-up and coo
 ```
 
 - `library/blocks/*.yaml` holds the exercises. **This is placeholder content and needs review.** Every block must be tagged low impact and quiet.
-- `library/templates/*.yaml` holds the workout shapes (circuits, intervals, long steady blocks).
+- `library/templates/*.yaml` holds the workout shapes: circuits, intervals, long steady blocks, and flex (mobility and standing sun salutations).
+- Blocks can set `switch:` (spoken exactly at halfway) and `countdown: true` ("Five … One" landing exactly on the switch and the end). The field guide at the top of `library/blocks/warmup.yaml` lists every line the tool adds by itself.
 - `library/music/tracks.yaml` lists the music tracks, which are downloaded at render time.
 - `clockwork/` contains the generator.
 

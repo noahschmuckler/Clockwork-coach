@@ -1,0 +1,38 @@
+# Mobility-heavy: stretches and a standing sun salutation in the warm-up, lighter
+# circuits, a mid-session flow, and a long posterior-chain cool-down.
+# Proposed by Instinct, revised. See circuit-45.yaml for step types.
+id: flex-45
+description: Mobility warm-up with a sun salutation, light circuits, a mid-session flow, long stretch cool-down.
+sections:
+  - name: Warm-up
+    mood: warm
+    steps:
+      - {block: session-open, seconds: 20}
+      - {block: march-in-place, seconds: 120}
+      - {pick: mobility, seconds: 60, count: 4}
+      - {pick: flow, seconds: 90}                 # 20+120+240+90 = 470
+  - name: Circuit one
+    mood: drive
+    steps:
+      - circuit: {rounds: 3, stations: [lower, upper, core, cardio], work: 45, rest: 15}   # 720 -> 1190
+  - name: Recovery
+    mood: warm
+    steps:
+      - {block: recovery-walk, seconds: 120}      # 1310
+  - name: Flow
+    mood: warm
+    steps:
+      - {pick: flow, seconds: 90}                 # the other sun salutation
+      - {pick: mobility, seconds: 60, count: 2}
+      - {pick: warmup, seconds: 90}               # 90+120+90 = 300 -> 1610
+  - name: Circuit two
+    mood: drive
+    steps:
+      - circuit: {rounds: 2, stations: [lower, cardio, core, upper], work: 40, rest: 20}   # 480 -> 2090
+  - name: Cool-down
+    mood: calm
+    steps:
+      - {block: slow-march-down, seconds: 120}
+      - {pick: stretch, seconds: 90, count: 4}
+      - {block: deep-breathing, seconds: 110}
+      - {block: session-close, seconds: 20}       # 120+360+110+20 = 610 -> 2700

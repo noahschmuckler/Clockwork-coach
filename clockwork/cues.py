@@ -13,11 +13,20 @@ from .library import LibraryError
 from .planner import TOTAL_SECONDS, PlanItem
 
 GAP_SECONDS = 0.4  # minimum silence between two cues
+COUNTDOWN_GAP_SECONDS = 0.1  # a countdown may run right up to the line that follows it
 HEADS_UP_SECONDS = 10
 EASIER_AT_SECONDS = 12
 
-# Lower number wins when two cues collide.
-PRIORITY = {"start": 0, "heads-up": 1, "easier": 2, "authored": 3, "checkpoint": 4, "minutes-left": 5}
+# "Five" .. "One" spoken one second apart, so "One" starts exactly 1 s before the target.
+COUNTDOWN_WORDS = ["Five.", "Four.", "Three.", "Two.", "One."]
+COUNTDOWN_TEXT = " ".join(COUNTDOWN_WORDS)
+COUNTDOWN_SECONDS = len(COUNTDOWN_WORDS)
+
+# Lower number wins when two cues collide. start, switch and countdown are required:
+# if one can't fit the render fails rather than dropping it.
+PRIORITY = {"start": 0, "switch": 1, "countdown": 1, "heads-up": 2, "authored": 3, "easier": 4,
+            "checkpoint": 5, "minutes-left": 6}
+REQUIRED = {"start", "switch", "countdown"}
 
 # (seconds into the session, line). Each may slide later by up to 30 s to find a gap.
 CHECKPOINTS = [
@@ -47,7 +56,7 @@ class Candidate:
 
     @property
     def required(self) -> bool:
-        return self.kind == "start"
+        return self.kind in REQUIRED
 
     @property
     def priority(self) -> int:
@@ -101,8 +110,20 @@ def candidates(plan: list[PlanItem]) -> list[Candidate]:
         if b.role == "session":
             continue
 
-        # Ten-second warning before the next block.
-        if d >= 30 and nxt_item is not None:
+        # Exactly-timed side switch and countdowns.
+        if b.switch:
+            out.append(Candidate(start + d / 2, b.switch, "switch", end, block_index=i))
+        if b.countdown:
+            targets = ([d / 2] if b.switch else []) + [d]
+            for target in targets:
+                out.append(Candidate(start + target - COUNTDOWN_SECONDS, COUNTDOWN_TEXT, "countdown",
+                                     start + target, block_index=i))
+
+        # Warning before the next block. With a countdown the numbers carry the timing,
+        # so the warning just names what's next, a little earlier.
+        if b.countdown and nxt_item is not None and nxt:
+            out.append(Candidate(end - 11, f"Next up, {nxt}.", "heads-up", end - COUNTDOWN_SECONDS, block_index=i))
+        elif d >= 30 and nxt_item is not None:
             if nxt_item.block.role == "rest" and not nxt_item.block.intro:
                 text = "Ten seconds."
             elif nxt:
@@ -146,14 +167,18 @@ def place(cands: list[Candidate], durations: dict[str, float]) -> tuple[list[Pla
     dropped: list[dict] = []
     errors: list[str] = []
 
-    def free(t: float, dur: float) -> bool:
-        return all(t + dur + GAP_SECONDS <= p.time or t >= p.end + GAP_SECONDS for p in placed)
+    def free(t: float, dur: float, kind: str) -> bool:
+        for p in placed:
+            gap = COUNTDOWN_GAP_SECONDS if "countdown" in (kind, p.kind) else GAP_SECONDS
+            if not (t + dur + gap <= p.time or t >= p.end + gap):
+                return False
+        return True
 
     for c in sorted(cands, key=lambda c: (c.priority, c.time)):
         dur = durations[c.text]
         t, chosen = c.time, None
         while t <= c.time + c.slide + 1e-9:
-            if t + dur <= c.window_end and free(t, dur):
+            if t + dur <= c.window_end and free(t, dur, c.kind):
                 chosen = t
                 break
             t += 0.5

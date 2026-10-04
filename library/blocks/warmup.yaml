@@ -13,7 +13,21 @@
 #   easier    the easier alternative, spoken once on first use (work blocks)
 #   cues      extra lines: at = seconds from block start, negative = from the
 #             end, or "half". Lines that don't fit are dropped, never squeezed.
+#   switch    optional line spoken exactly at the halfway point, e.g. Switch sides.
+#   countdown optional true: "Five. Four. Three. Two. One." one second apart, with
+#             "One" a second before the switch and before the block ends
 #   tags      impact must be low and noise must be quiet (enforced)
+#
+# Lines the tool adds by itself (don't write these as cues):
+#   - at the start: "<name>. <intro>" the first time, "<name>. Go." on repeats
+#   - 12 s in, first use only: "Easier option: <easier>" (dropped if there's no room)
+#   - 10 s before the end: "Ten seconds. Next up, <next>." (blocks of 30 s or more);
+#     with countdown: true it is "Next up, <next>." 11 s before the end instead
+#   - blocks of 150 s or more: "N minutes left in this one." each minute
+#   - session checkpoints near 10:00, 22:30, 35:00 and 40:00
+# Priority when lines collide: start > switch/countdown > next-up > cues > easier
+# > checkpoints > minutes left. start, switch and countdown are never dropped: if
+# one can't fit, the render fails, so keep intros short in short blocks.
 
 - id: march-in-place
   name: March in place
@@ -24,7 +38,7 @@
   easier: Just shift your weight from foot to foot.
   cues:
     - {at: 60, text: Breathe steady. You should be able to talk.}
-    - {at: 300, text: Stay relaxed. Soft, quiet feet.}
+    - {at: 300, text: "Stay relaxed. Soft, quiet feet."}
   tags: {impact: low, noise: quiet, joints: [knees, ankles]}
 
 - id: step-touch
@@ -44,8 +58,7 @@
   families: [warmup]
   seconds: {min: 30, max: 120}
   intro: Roll your shoulders slowly backward in big circles.
-  cues:
-    - {at: half, text: Now roll them forward.}
+  switch: Now roll them forward.
   tags: {impact: low, noise: quiet, joints: [shoulders]}
 
 - id: arm-circles
@@ -55,8 +68,7 @@
   seconds: {min: 30, max: 120}
   intro: Arms out to the sides. Small, slow circles.
   easier: Keep your elbows bent and make the circles tiny.
-  cues:
-    - {at: half, text: Switch direction.}
+  switch: Switch direction.
   tags: {impact: low, noise: quiet, joints: [shoulders]}
 
 - id: hip-circles
@@ -65,8 +77,7 @@
   families: [warmup]
   seconds: {min: 30, max: 120}
   intro: Hands on your hips, feet apart. Slow circles.
-  cues:
-    - {at: half, text: Switch direction.}
+  switch: Switch direction.
   tags: {impact: low, noise: quiet, joints: [hips]}
 
 - id: heel-digs
@@ -92,8 +103,7 @@
   families: [warmup]
   seconds: {min: 30, max: 120}
   intro: Hold a wall or chair. Lift one foot a little and circle the ankle.
-  cues:
-    - {at: half, text: Switch feet.}
+  switch: Switch feet.
   tags: {impact: low, noise: quiet, joints: [ankles]}
 
 - id: overhead-reach

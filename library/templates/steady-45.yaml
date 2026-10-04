@@ -6,8 +6,9 @@ sections:
     mood: warm
     steps:
       - {block: session-open, seconds: 20}
-      - {block: march-in-place, seconds: 180}
-      - {pick: warmup, seconds: 90, count: 2}
+      - {block: march-in-place, seconds: 120}
+      - {pick: warmup, seconds: 60, count: 1}
+      - {pick: mobility, seconds: 60, count: 3}  # 20+120+60+180 = 380
   - name: Steady one
     mood: drive
     steps:

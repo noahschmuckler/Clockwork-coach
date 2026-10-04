@@ -1,0 +1,154 @@
+# Mobility and standing sun-salutation blocks, proposed by Instinct and revised.
+# PLACEHOLDER CONTENT - review before use. See warmup.yaml for the field guide.
+# All standing, no kneeling or floor work. Gentle pull, never pain.
+
+# --- mobility: fixed 60 s, 30 s a side, countdown into each switch and the end ---
+- id: wall-calf-warm
+  name: Gentle calf stretch
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Hands on a wall, one foot back with the heel down and the leg straight. Lean in gently.
+  easier: Step the back foot closer to the wall.
+  switch: Switch sides.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [ankles]}
+
+- id: wall-achilles-warm
+  name: Achilles stretch
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Hands on a wall, one foot back, heel down. Bend the back knee a little and keep the heel down.
+  easier: Shorten the step back.
+  switch: Switch sides.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [ankles]}
+
+- id: heel-forward-hamstring
+  name: Hamstring reach
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: One heel forward, toes up, front knee soft. Hinge at the hips with a long back, hands on your thigh.
+  easier: Bend the front knee more.
+  switch: Switch sides.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: chair-hamstring
+  name: Chair hamstring stretch
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Hold a wall for balance. Rest one heel on a low, sturdy chair and hinge forward until you feel a gentle pull.
+  easier: Use a lower seat or bend the knee.
+  switch: Switch sides.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: standing-open-book
+  name: Standing open book
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Soft knees. Reach both arms forward, then sweep one arm open and turn your chest with it.
+  easier: Make the sweep smaller.
+  switch: Switch sides.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back, shoulders]}
+
+- id: soft-forward-fold
+  name: Soft forward fold
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Feet hip width, knees bent. Hinge forward with your hands on your thighs or a chair. Breathe slowly.
+  easier: Fold less.
+  cues:
+    - {at: -16, text: "Come up slowly, one vertebra at a time."}
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: wall-hang
+  name: Wall back stretch
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Hands on a wall at hip height. Walk your feet back and push your hips away, with a long flat back.
+  easier: Walk your feet in and raise your hands higher.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back, shoulders]}
+
+- id: standing-cat-cow
+  name: Standing cat and cow
+  role: warmup
+  families: [mobility]
+  seconds: {min: 60, max: 60}
+  intro: Hands on your thighs, knees soft. Breathe in and gently arch your back. Breathe out and gently round it.
+  easier: Make the movement smaller.
+  cues:
+    - {at: 22, text: Slow breath. Arch as you breathe in.}
+    - {at: 36, text: Round as you breathe out.}
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+# --- sun salutation flows: fixed length, breath-led, standing ---
+# The easier option is in the intro so it can't crowd the breath cues, and the
+# closing cue ends well before the tool's "Ten seconds" line.
+- id: sun-salutation-standing
+  name: Sun salutation, standing
+  role: warmup
+  families: [flow]
+  seconds: {min: 90, max: 90}
+  intro: Stand tall and move with your breath. Keep your knees soft and the fold small.
+  cues:
+    - {at: 10, text: Breathe in. Reach both arms up.}
+    - {at: 17, text: "Breathe out. Fold forward, knees soft."}
+    - {at: 24, text: "Breathe in. Halfway up, hands on your thighs."}
+    - {at: 31, text: Breathe out. Fold.}
+    - {at: 37, text: "Breathe in. Rise slowly, arms overhead."}
+    - {at: 44, text: Breathe out. Hands to your heart.}
+    - {at: 52, text: "Once more. Breathe in, reach up."}
+    - {at: 58, text: Breathe out. Fold.}
+    - {at: 64, text: "Breathe in. Rise slowly, arms overhead."}
+    - {at: 71, text: Breathe out. Hands to your heart.}
+  tags: {impact: low, noise: quiet, joints: [back, hips]}
+
+- id: sun-salutation-wall
+  name: Sun salutation with the wall
+  role: warmup
+  families: [flow]
+  seconds: {min: 90, max: 90}
+  intro: Stand an arm's length from a wall and move with your breath. Skip the wall step if you'd rather.
+  cues:
+    - {at: 10, text: Breathe in. Reach up.}
+    - {at: 16, text: "Breathe out. Hands on the wall, walk your feet back."}
+    - {at: 24, text: Push your hips back. Let your heels sink toward the floor.}
+    - {at: 32, text: Hold here. Three slow breaths.}
+    - {at: 50, text: Breathe in. Walk your feet in.}
+    - {at: 57, text: "Breathe out. Soft fold, knees bent."}
+    - {at: 64, text: "Breathe in. Rise slowly, arms overhead."}
+    - {at: 71, text: Breathe out. Hands to your heart.}
+  tags: {impact: low, noise: quiet, joints: [back, shoulders, ankles]}
+
+# The most demanding flow. No template picks it yet (they all use 90 s flows);
+# it's only used when a custom plan names it. Review before adding it to a template.
+- id: sun-salutation-lunge
+  name: Sun salutation with a lunge
+  role: warmup
+  families: [flow-lunge]
+  seconds: {min: 120, max: 120}
+  intro: Keep a chair or wall within reach. We'll step back into a short, high lunge, with no kneeling. Take a shorter step if you need to.
+  cues:
+    - {at: 12, text: Breathe in. Reach up.}
+    - {at: 18, text: "Breathe out. Soft fold, knees bent."}
+    - {at: 25, text: Breathe in. Halfway up.}
+    - {at: 31, text: "Breathe out. Step your right foot back, short and high. Hands on the chair."}
+    - {at: 42, text: Hold. Breathe slowly.}
+    - {at: 52, text: Step in. Rise with arms overhead.}
+    - {at: 60, text: "Now the left. Step back, short and high."}
+    - {at: 70, text: Hold. Breathe slowly.}
+    - {at: 82, text: Step in. Rise slowly.}
+    - {at: 90, text: Breathe out. Hands to your heart.}
+  tags: {impact: low, noise: quiet, joints: [knees, hips, back]}

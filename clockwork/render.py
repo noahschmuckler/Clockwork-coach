@@ -30,7 +30,7 @@ def render(request: dict, out_dir: Path, label: str, tts_backend: str = "piper",
 
     speaker = Speaker(tts_backend)
     cands = cuelib.candidates(plan)
-    clips = {text: speaker.say(text) for text in sorted({c.text for c in cands})}
+    clips = speak_all(speaker, {c.text for c in cands})
     durations = {text: len(a) / SAMPLE_RATE for text, a in clips.items()}
     placed, dropped = cuelib.place(cands, durations)
 
@@ -86,6 +86,11 @@ def render(request: dict, out_dir: Path, label: str, tts_backend: str = "piper",
     (out_dir / "CREDITS.txt").write_text(credits(tracks, speaker.voice))
     (out_dir / "summary.md").write_text(summary(manifest, plan, download_base + filename if download_base else ""))
     return manifest
+
+
+def speak_all(speaker: Speaker, texts: set[str]) -> dict:
+    return {t: speaker.countdown(cuelib.COUNTDOWN_WORDS) if t == cuelib.COUNTDOWN_TEXT else speaker.say(t)
+            for t in sorted(texts)}
 
 
 def credits(tracks: list[library.Track], voice: str) -> str:

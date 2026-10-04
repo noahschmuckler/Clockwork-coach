@@ -50,8 +50,7 @@
   seconds: {min: 30, max: 120}
   intro: Hold a wall. Bend one knee and hold your ankle or pant leg behind you.
   easier: Rest your foot on a chair behind you instead.
-  cues:
-    - {at: half, text: Switch sides.}
+  switch: Switch sides.
   tags: {impact: low, noise: quiet, joints: [knees]}
 
 - id: hamstring-stretch
@@ -60,8 +59,7 @@
   families: [stretch]
   seconds: {min: 30, max: 120}
   intro: One heel forward, toes up. Hinge at the hips with a long, straight back.
-  cues:
-    - {at: half, text: Switch legs.}
+  switch: Switch legs.
   tags: {impact: low, noise: quiet, joints: [back]}
 
 - id: calf-stretch
@@ -70,8 +68,7 @@
   families: [stretch]
   seconds: {min: 30, max: 120}
   intro: Hands on the wall, one foot back, heel down.
-  cues:
-    - {at: half, text: Switch legs.}
+  switch: Switch legs.
   tags: {impact: low, noise: quiet, joints: [ankles]}
 
 - id: chest-opener
@@ -88,8 +85,7 @@
   families: [stretch]
   seconds: {min: 30, max: 90}
   intro: Bring one arm across your chest and hold it with the other.
-  cues:
-    - {at: half, text: Switch arms.}
+  switch: Switch arms.
   tags: {impact: low, noise: quiet, joints: [shoulders]}
 
 - id: side-reach-stretch
@@ -98,8 +94,7 @@
   families: [stretch]
   seconds: {min: 30, max: 90}
   intro: Reach one arm overhead and lean gently to the side.
-  cues:
-    - {at: half, text: Switch sides.}
+  switch: Switch sides.
   tags: {impact: low, noise: quiet, joints: [back]}
 
 - id: deep-breathing
@@ -112,3 +107,49 @@
     - {at: 40, text: In for four. Out for six.}
     - {at: 90, text: Let your shoulders drop.}
   tags: {impact: low, noise: quiet, joints: []}
+
+# --- posterior-chain cool-down stretches (proposed by Instinct, revised) ---
+# Fixed 90 s, 45 s a side, countdown into each switch and the end.
+- id: cool-calf-achilles
+  name: Calf and Achilles stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 90, max: 90}
+  intro: Hands on a wall, one foot back, heel down. Back leg straight, then let the knee bend a little.
+  easier: Shorten the step.
+  switch: Switch sides.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [ankles]}
+
+- id: cool-chair-hamstring
+  name: Chair hamstring stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 90, max: 90}
+  intro: Hold a wall for balance. One heel on a low, sturdy chair. Hinge forward until you feel a gentle pull.
+  easier: Use a lower seat.
+  switch: Switch legs.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: cool-back-fold
+  name: Soft forward fold
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 90, max: 90}
+  intro: Feet hip width, knees bent. Fold forward with your hands on your thighs or a chair. Breathe slowly.
+  easier: Fold less.
+  cues:
+    - {at: -16, text: "Come up slowly, one vertebra at a time."}
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: cool-wall-hang
+  name: Wall back stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 90, max: 90}
+  intro: Hands on a wall at hip height, feet walked back, hips pushing away with a long back.
+  easier: Walk your feet in.
+  countdown: true
+  tags: {impact: low, noise: quiet, joints: [back, shoulders]}

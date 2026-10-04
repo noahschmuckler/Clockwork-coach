@@ -71,6 +71,18 @@ class Speaker:
             _write_wav(path, audio)
         return _read_wav(path)
 
+    def countdown(self, words: list[str]) -> np.ndarray:
+        """One word per second ("Five." "Four." ...), each starting exactly on its second."""
+        step = SAMPLE_RATE
+        parts = [self.say(w) for w in words]
+        for w, p in zip(words, parts):
+            if len(p) > 0.9 * step:
+                raise RuntimeError(f"countdown word {w!r} takes {len(p) / step:.2f}s; it must fit in 0.9s")
+        out = np.zeros(step * (len(words) - 1) + len(parts[-1]), dtype=np.float32)
+        for k, p in enumerate(parts):
+            out[k * step: k * step + len(p)] = p
+        return out
+
     def _synthesize(self, text: str) -> np.ndarray:
         if self.backend == "tone":
             # Stand-in for tests: ~14 characters per second, like real speech.

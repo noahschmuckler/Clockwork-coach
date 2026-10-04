@@ -16,7 +16,7 @@ seed: 4417
 music: on
 ```
 
-- `template`: `any` (the seed picks a template), `circuit-45`, `intervals-45` or `steady-45`. The current list is in the repo under `library/templates/`.
+- `template`: `any` (the seed picks a template), `circuit-45`, `intervals-45`, `steady-45` or `flex-45` (mobility-heavy, with standing sun salutations and a long stretch cool-down). The current list is in the repo under `library/templates/`.
 - `seed`: any whole number. The same template and seed always give the same workout. Use a new seed each time for variety. If you leave it out, the issue number is used.
 - `music`: `on` or `off`.
 - Every field is optional. An empty body gives a valid workout.
@@ -34,6 +34,11 @@ Send Noah the `.m4a` link and a one-line summary from the table by iMessage. Sen
 
 Each workout is also stored permanently as a GitHub Release named `workout-<issue number>`, along with `manifest.json` (every cue with its timestamp) and `CREDITS.txt`.
 
+## Variety
+- Use a new seed for every workout and never repeat one, since the same seed gives the same workout.
+- `template: any` rotates through all templates.
+- Ask for `flex-45` when Noah wants an easier, stretch-focused day. Don't write the reason in the issue.
+
 ## Custom plans (optional)
 Instead of a template and seed, you can lay out the blocks yourself:
 
@@ -49,7 +54,11 @@ plan:
 - The whole plan must total exactly 2700 seconds.
 - The plan must start with at least 180 s of warm-up blocks and end with at least 180 s of cool-down blocks. Work can't run longer than 900 s without a rest.
 - The validator decides. If it rejects a plan, fix the plan.
+- `sun-salutation-lunge` is only used when a custom plan names it. Noah hasn't added it to a template yet.
 - You don't invent exercises or wording. To propose new blocks, open a pull request against `library/`, and Noah reviews it.
+- When writing blocks, read the field guide at the top of `library/blocks/warmup.yaml`. It lists the lines the tool already speaks on its own (start, "Easier option", "Ten seconds. Next up", minutes left, checkpoints). Don't duplicate them.
+  - Use `switch:` for a side change exactly at the halfway point, and `countdown: true` for "Five … One" landing exactly on the switch and on the block end. Don't hand-write countdowns.
+  - Quote cue text that contains a comma: `{at: 20, text: "Slow breath, arch your back."}`.
 
 ## Rules
 - **The repo is public**, so issues are visible to anyone. Never put health details, sleep or energy data, Noah's location or any credentials in an issue.

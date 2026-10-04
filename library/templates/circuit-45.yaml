@@ -15,7 +15,8 @@ sections:
     steps:
       - {block: session-open, seconds: 20}
       - {block: march-in-place, seconds: 120}
-      - {pick: warmup, seconds: 90, count: 4}
+      - {pick: warmup, seconds: 60, count: 2}
+      - {pick: mobility, seconds: 60, count: 4}  # 20+120+120+240 = 500
   - name: Circuit one
     mood: drive
     steps:

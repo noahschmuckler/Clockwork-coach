@@ -36,8 +36,7 @@
   seconds: {min: 30, max: 120}
   intro: Hold a wall. Lift one leg out to the side, slow and controlled.
   easier: Make the lift smaller.
-  cues:
-    - {at: half, text: Switch legs.}
+  switch: Switch legs.
   tags: {impact: low, noise: quiet, joints: [hips]}
 
 - id: hamstring-curls
