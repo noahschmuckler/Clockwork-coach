@@ -1,0 +1,124 @@
+name: render
+run-name: render ${{ github.event.issue.number && format('issue #{0}', github.event.issue.number) || format('manual {0}', github.run_number) }}
+
+# A workout is requested by opening an issue whose title starts with "render"
+# (see docs/agent-brief.md), or by hand from the Actions tab.
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      template:
+        description: Template (any, circuit-45, intervals-45, steady-45)
+        default: any
+      seed:
+        description: Seed (whole number)
+        default: "1"
+      music:
+        description: Background music
+        type: choice
+        options: ["on", "off"]
+        default: "on"
+
+permissions:
+  contents: write # publish releases
+  issues: write # comment on and close the request issue
+
+concurrency:
+  group: render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    # The repo is public, so anyone can open an issue. Only the owner (or logins
+    # listed in the RENDER_REQUESTERS repository variable, comma-separated) may
+    # trigger a render.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (startsWith(github.event.issue.title, 'render') &&
+       (github.event.issue.user.login == github.repository_owner ||
+        contains(format(',{0},', vars.RENDER_REQUESTERS), format(',{0},', github.event.issue.user.login))))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      ISSUE: ${{ github.event.issue.number }}
+      LABEL: ${{ github.event.issue.number || format('manual-{0}', github.run_number) }}
+      TAG: workout-${{ github.event.issue.number || format('manual-{0}', github.run_number) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Acknowledge request
+        if: github.event_name == 'issues'
+        run: gh issue comment "$ISSUE" --body "Rendering now. This usually takes 3-10 minutes; I'll post the download link here."
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install ffmpeg and Python packages
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg
+          pip install -r requirements.txt
+
+      - name: Restore voice, music and speech cache
+        uses: actions/cache@v4
+        with:
+          path: .cache
+          key: clockwork-${{ hashFiles('library/**', 'clockwork/tts.py', 'clockwork/music.py') }}
+          restore-keys: clockwork-
+
+      - name: Write request
+        env:
+          BODY: ${{ github.event.issue.body }}
+          TEMPLATE: ${{ inputs.template }}
+          SEED: ${{ inputs.seed }}
+          MUSIC: ${{ inputs.music }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "issues" ]; then
+            printf '%s\n' "$BODY" > request.txt
+          else
+            printf 'template: %s\nseed: %s\nmusic: %s\n' "$TEMPLATE" "$SEED" "$MUSIC" > request.txt
+          fi
+
+      - name: Render
+        run: >-
+          python -m clockwork render --request-file request.txt --label "$LABEL" --out out
+          --download-base "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/"
+
+      - name: Publish release
+        run: |
+          files=(out/*.m4a out/manifest.json out/CREDITS.txt)
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${files[@]}" --clobber
+          else
+            gh release create "$TAG" "${files[@]}" --title "Workout $LABEL" --notes-file out/summary.md --latest=false
+          fi
+
+      - name: Reply on issue
+        if: github.event_name == 'issues'
+        run: |
+          gh issue comment "$ISSUE" --body-file out/summary.md
+          gh issue close "$ISSUE" --reason completed
+
+      - name: Report failure on issue
+        if: failure() && github.event_name == 'issues'
+        run: |
+          {
+            echo "**Render failed.** Nothing was published."
+            echo
+            if [ -f out/error.txt ]; then
+              echo '```'
+              cat out/error.txt
+              echo '```'
+            else
+              echo "Unexpected error; see the run log: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            fi
+            echo
+            echo "Fix the request and open a new issue (don't reuse this one)."
+          } > failure.md
+          gh issue comment "$ISSUE" --body-file failure.md
+          gh issue close "$ISSUE" --reason "not planned"

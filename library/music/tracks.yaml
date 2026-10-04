@@ -1,0 +1,58 @@
+# Lyrics-free Kevin MacLeod tracks, used under CC BY 4.0 (incompetech.com).
+# Files are downloaded at render time into .cache/music/ (not committed).
+# mood: warm = encouraging warm-up/recovery, drive = higher-effort, calm = cool-down.
+# Picked from Incompetech's catalog (pieces.json); listen and swap freely.
+- id: funky-chunk
+  title: Funky Chunk
+  artist: Kevin MacLeod
+  mood: warm
+  url: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funky%20Chunk.mp3
+  page: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1500054
+  license: CC BY 4.0
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  filename: funky-chunk.mp3
+- id: montauk-point
+  title: Montauk Point
+  artist: Kevin MacLeod
+  mood: warm
+  url: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Montauk%20Point.mp3
+  page: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1400013
+  license: CC BY 4.0
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  filename: montauk-point.mp3
+- id: motivator
+  title: Motivator
+  artist: Kevin MacLeod
+  mood: drive
+  url: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Motivator.mp3
+  page: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100803
+  license: CC BY 4.0
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  filename: motivator.mp3
+- id: nonstop
+  title: Nonstop
+  artist: Kevin MacLeod
+  mood: drive
+  url: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Nonstop.mp3
+  page: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1600042
+  license: CC BY 4.0
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  filename: nonstop.mp3
+- id: meditation-impromptu-02
+  title: Meditation Impromptu 02
+  artist: Kevin MacLeod
+  mood: calm
+  url: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Meditation%20Impromptu%2002.mp3
+  page: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100162
+  license: CC BY 4.0
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  filename: meditation-impromptu-02.mp3
+- id: clean-soul
+  title: Clean Soul
+  artist: Kevin MacLeod
+  mood: calm
+  url: https://incompetech.com/music/royalty-free/mp3-royaltyfree/Clean%20Soul.mp3
+  page: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1300033
+  license: CC BY 4.0
+  license_url: https://creativecommons.org/licenses/by/4.0/
+  filename: clean-soul.mp3

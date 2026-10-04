@@ -1,0 +1,181 @@
+# PLACEHOLDER CONTENT - see warmup.yaml for the field guide. Review before use.
+# All standing or supported movements: no jumping, no floor work, no drops.
+
+# --- lower body ---
+- id: sit-to-stand
+  name: Sit to stand
+  role: work
+  families: [lower]
+  seconds: {min: 30, max: 120}
+  intro: Sit on the edge of a chair or bed. Stand up, then sit back down with control.
+  easier: Push off your thighs with your hands.
+  tags: {impact: low, noise: quiet, joints: [knees, hips]}
+
+- id: mini-squats
+  name: Mini squats
+  role: work
+  families: [lower]
+  seconds: {min: 30, max: 120}
+  intro: Feet hip width. Bend your knees a little, then stand tall. Small range.
+  easier: Hold a counter for balance and bend less.
+  tags: {impact: low, noise: quiet, joints: [knees, hips]}
+
+- id: calf-raises
+  name: Calf raises
+  role: work
+  families: [lower]
+  seconds: {min: 30, max: 120}
+  intro: Hold a wall. Rise onto your toes, then lower slowly.
+  easier: Rise only part of the way.
+  tags: {impact: low, noise: quiet, joints: [ankles]}
+
+- id: side-leg-raises
+  name: Side leg raises
+  role: work
+  families: [lower]
+  seconds: {min: 30, max: 120}
+  intro: Hold a wall. Lift one leg out to the side, slow and controlled.
+  easier: Make the lift smaller.
+  cues:
+    - {at: half, text: Switch legs.}
+  tags: {impact: low, noise: quiet, joints: [hips]}
+
+- id: hamstring-curls
+  name: Standing hamstring curls
+  role: work
+  families: [lower]
+  seconds: {min: 30, max: 120}
+  intro: Hold a chair. Bring one heel toward your seat, then the other.
+  easier: Go slower and lift less.
+  tags: {impact: low, noise: quiet, joints: [knees]}
+
+- id: high-wall-sit
+  name: High wall sit
+  role: work
+  families: [lower]
+  seconds: {min: 20, max: 60}
+  intro: Back against a wall, feet a step forward. Slide down just a few inches and hold.
+  easier: Barely bend your knees.
+  tags: {impact: low, noise: quiet, joints: [knees]}
+
+# --- upper body ---
+- id: wall-pushups
+  name: Wall push-ups
+  role: work
+  families: [upper]
+  seconds: {min: 30, max: 120}
+  intro: Hands on the wall at shoulder height. Lower your chest toward the wall, then push back.
+  easier: Step your feet closer to the wall.
+  tags: {impact: low, noise: quiet, joints: [shoulders, wrists]}
+
+- id: counter-pushups
+  name: Counter push-ups
+  role: work
+  families: [upper]
+  seconds: {min: 30, max: 120}
+  intro: Hands on a sturdy counter or desk. Lower your chest, then push away.
+  easier: Use the wall instead.
+  tags: {impact: low, noise: quiet, joints: [shoulders, wrists]}
+
+- id: slow-punches
+  name: Slow punches
+  role: work
+  families: [upper, cardio]
+  seconds: {min: 30, max: 300}
+  intro: Soft knees. Punch forward one arm at a time. Controlled, not snapping.
+  easier: Make the punches shorter.
+  tags: {impact: low, noise: quiet, joints: [shoulders, elbows]}
+
+- id: wall-slides
+  name: Wall slides
+  role: work
+  families: [upper]
+  seconds: {min: 30, max: 90}
+  intro: Back to the wall, arms bent like goal posts. Slide them up and down slowly.
+  easier: Stand a little away from the wall.
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+- id: arm-pulses
+  name: Arm pulses
+  role: work
+  families: [upper]
+  seconds: {min: 20, max: 90}
+  intro: Arms straight out to the sides. Small pulses up and down.
+  easier: Bend your elbows.
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+# --- core ---
+- id: standing-crunch
+  name: Standing crunch
+  role: work
+  families: [core, cardio]
+  seconds: {min: 30, max: 120}
+  intro: Bring one knee up and the opposite elbow down to meet it. Alternate sides.
+  easier: Lift the knee lower and keep a hand on a wall.
+  tags: {impact: low, noise: quiet, joints: [hips, back]}
+
+- id: side-bends
+  name: Standing side bends
+  role: work
+  families: [core]
+  seconds: {min: 30, max: 120}
+  intro: Slide one hand down the side of your leg, come back up, then switch sides.
+  easier: Smaller range.
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: wall-plank
+  name: Wall plank
+  role: work
+  families: [core]
+  seconds: {min: 20, max: 60}
+  intro: Forearms on the wall, step your feet back, brace your stomach and hold.
+  easier: Step your feet closer to the wall.
+  tags: {impact: low, noise: quiet, joints: [shoulders, back]}
+
+- id: braced-twists
+  name: Braced twists
+  role: work
+  families: [core]
+  seconds: {min: 30, max: 120}
+  intro: Hands together in front of your chest. Rotate slowly side to side, stomach tight.
+  easier: Smaller turns.
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: slow-braced-march
+  name: Slow braced march
+  role: work
+  families: [core]
+  seconds: {min: 30, max: 120}
+  intro: Stand tall, tighten your stomach. Lift one knee slowly, lower it, then switch.
+  easier: Hold a wall.
+  tags: {impact: low, noise: quiet, joints: [hips]}
+
+# --- low-impact cardio ---
+- id: shadow-boxing
+  name: Shadow boxing
+  role: work
+  families: [cardio]
+  seconds: {min: 30, max: 600}
+  intro: Light on your feet, but don't bounce. Jabs and crosses, smooth and steady.
+  easier: Keep your feet still and just punch.
+  cues:
+    - {at: 120, text: Add a slow hook if you like. Turn from your hips.}
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+- id: side-step-reach
+  name: Side step and reach
+  role: work
+  families: [cardio]
+  seconds: {min: 30, max: 300}
+  intro: Step to the side and reach the same arm overhead. Alternate sides.
+  easier: Leave the reach out.
+  tags: {impact: low, noise: quiet, joints: [knees, shoulders]}
+
+- id: knee-lifts
+  name: Knee lifts
+  role: work
+  families: [cardio]
+  seconds: {min: 30, max: 300}
+  intro: Lift one knee toward your hands, then the other. Steady rhythm.
+  easier: Lift lower and go slower.
+  tags: {impact: low, noise: quiet, joints: [knees, hips]}

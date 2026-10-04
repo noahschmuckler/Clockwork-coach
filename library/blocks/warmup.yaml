@@ -1,0 +1,106 @@
+# PLACEHOLDER CONTENT - written by an AI assistant as a starting point.
+# Noah must review every block (movement choice, wording, duration bounds)
+# before relying on it. Edit freely; the validator checks structure, not safety.
+#
+# Block fields:
+#   id        unique, lowercase-with-dashes
+#   name      spoken when the block starts and in "next up" announcements
+#   role      session | warmup | work | rest | cooldown
+#   families  pools a template can pick from (warmup, lower, upper, core, cardio,
+#             recovery, stretch, ...)
+#   seconds   allowed duration range {min, max}; templates must stay inside it
+#   intro     one short instruction, spoken right after the name on first use
+#   easier    the easier alternative, spoken once on first use (work blocks)
+#   cues      extra lines: at = seconds from block start, negative = from the
+#             end, or "half". Lines that don't fit are dropped, never squeezed.
+#   tags      impact must be low and noise must be quiet (enforced)
+
+- id: march-in-place
+  name: March in place
+  role: warmup
+  families: [warmup, cardio]
+  seconds: {min: 30, max: 900}
+  intro: Easy pace. Lift your knees only as high as feels good, and let your arms swing.
+  easier: Just shift your weight from foot to foot.
+  cues:
+    - {at: 60, text: Breathe steady. You should be able to talk.}
+    - {at: 300, text: Stay relaxed. Soft, quiet feet.}
+  tags: {impact: low, noise: quiet, joints: [knees, ankles]}
+
+- id: step-touch
+  name: Step touch
+  role: warmup
+  families: [warmup, cardio]
+  seconds: {min: 30, max: 600}
+  intro: Step to the side, bring the other foot in. Soft, quiet feet.
+  easier: Make the steps smaller and slower.
+  cues:
+    - {at: 90, text: Add your arms if you like. Reach out as you step.}
+  tags: {impact: low, noise: quiet, joints: [knees, ankles]}
+
+- id: shoulder-rolls
+  name: Shoulder rolls
+  role: warmup
+  families: [warmup]
+  seconds: {min: 30, max: 120}
+  intro: Roll your shoulders slowly backward in big circles.
+  cues:
+    - {at: half, text: Now roll them forward.}
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+- id: arm-circles
+  name: Arm circles
+  role: warmup
+  families: [warmup]
+  seconds: {min: 30, max: 120}
+  intro: Arms out to the sides. Small, slow circles.
+  easier: Keep your elbows bent and make the circles tiny.
+  cues:
+    - {at: half, text: Switch direction.}
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+- id: hip-circles
+  name: Hip circles
+  role: warmup
+  families: [warmup]
+  seconds: {min: 30, max: 120}
+  intro: Hands on your hips, feet apart. Slow circles.
+  cues:
+    - {at: half, text: Switch direction.}
+  tags: {impact: low, noise: quiet, joints: [hips]}
+
+- id: heel-digs
+  name: Heel digs
+  role: warmup
+  families: [warmup, cardio]
+  seconds: {min: 30, max: 300}
+  intro: Tap one heel forward, then the other. Punch your arms gently forward if you like.
+  easier: Keep your hands on your hips.
+  tags: {impact: low, noise: quiet, joints: [knees]}
+
+- id: torso-turns
+  name: Gentle torso turns
+  role: warmup
+  families: [warmup]
+  seconds: {min: 30, max: 120}
+  intro: Feet planted. Turn your upper body side to side. Easy range.
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: ankle-circles
+  name: Ankle circles
+  role: warmup
+  families: [warmup]
+  seconds: {min: 30, max: 120}
+  intro: Hold a wall or chair. Lift one foot a little and circle the ankle.
+  cues:
+    - {at: half, text: Switch feet.}
+  tags: {impact: low, noise: quiet, joints: [ankles]}
+
+- id: overhead-reach
+  name: Overhead reaches
+  role: warmup
+  families: [warmup, upper]
+  seconds: {min: 30, max: 120}
+  intro: Reach one arm up toward the ceiling, then the other.
+  easier: Reach only to shoulder height.
+  tags: {impact: low, noise: quiet, joints: [shoulders]}

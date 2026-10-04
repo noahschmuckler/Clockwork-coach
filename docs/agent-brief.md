@@ -1,94 +1,63 @@
-Hi. I'm changing the plan for the Audio Workout Coach. Here is what changed, and what you need on your side to use the tool on your own.
-
-## What changed from v0.3
-
-- **No local computer and no operator.** The tool runs entirely on GitHub, in the repo `noahschmuckler/Clockwork-coach` (public). GitHub Actions does the rendering with Python and FFmpeg. Releases hold the finished files. GitHub Pages is an optional download page.
-- **No ElevenLabs in V1.** Voice comes from an open-source TTS engine (Piper) that runs inside the Action, using one fixed male voice. The voice only has to be clear and correctly timed, not polished. ElevenLabs is a possible phase 2 upgrade, so don't spend those credits or handle that key for now.
-- **You drive it.** You ask for a workout, the tool builds it, and you send me the download link. You don't need to set up any server.
-- **Still true from v0.3:** a 2,700-second (45:00) timeline built from an approved block library, deterministic for a given seed, a validator that rejects bad timing rather than stretching blocks, no-jump/quiet constraints, low-volume voice-first mix, lyrics-free CC BY music with credits, and the release checks.
+Hi Instinct. Thanks for the capability answers. Your idea of starting a render by opening an issue is now the design, and the tool is built. Here is how to use it.
 
 ## What you need
+- The GitHub connector you already have, able to **create issues** and **read issue comments** in `noahschmuckler/Clockwork-coach`. Viewing the issue page in your browser works as well.
+- Nothing else: no token, no API key, no ElevenLabs, no computer.
 
-1. **A GitHub fine-grained personal access token** that I'll create and give you:
-   - Repository access: only `noahschmuckler/Clockwork-coach`
-   - Permissions: Actions = Read and write, Contents = Read-only, Metadata = Read-only
-   - Store it as a secret on your side. Never put it in a message, file, log or workflow input.
-   - It has an expiry date. When calls start returning 401, tell me and I'll issue a new one.
-2. **Outbound HTTPS** to `api.github.com`, `github.com` and `objects.githubusercontent.com`.
-3. **A way to deliver a link to me** (text or message). The file is about 20–40 MB, so a link is better than an attachment.
+## Requesting a workout
+Open **one new issue per workout**:
 
-You do not need: an ElevenLabs key, Python, FFmpeg, a server, a phone app, or any paid service.
+- **Title:** must start with `render`, for example `render: workout for Oct 5`. Issues with other titles are ignored.
+- **Body:** a few `key: value` lines:
 
-## First, tell me what you can do
-
-Please answer these before I build anything, because the design depends on them:
-
-1. Can you make authenticated HTTPS API calls (custom headers, JSON body) using a secret you store securely? This is the preferred route.
-2. Do you have a browser you can drive? If so:
-   - Can it stay logged in to a site between sessions?
-   - Can it fill in and submit web forms?
-   - When you download a file, where does it go, and can you send that file or its link on to me?
-3. Can you poll something on a schedule, such as checking every minute for 20 minutes, or do you need a callback?
-4. How can you reach me: text, email, or something else? Is there a file-size limit?
-
-**If you can only use a browser:** don't use my GitHub login. I'll create a separate free GitHub account for you and add it to the repo as a collaborator. You'd start a render from the repo's Actions tab ("render" → "Run workflow"), enter the same inputs listed below, then open the Releases page and send me the link to `workout.m4a`. The API route below is still the better choice if you can make API calls, because it's faster and less fragile than clicking through pages.
-
-## How to request a workout (contract, subject to small changes once built)
-
-**1. Start the render:**
-
-```
-POST https://api.github.com/repos/noahschmuckler/Clockwork-coach/actions/workflows/render.yml/dispatches
-Authorization: Bearer <token>
-Accept: application/vnd.github+json
-
-{
-  "ref": "main",
-  "inputs": {
-    "request_id": "w-20261004-0630",
-    "template": "standard-45",
-    "seed": "4417",
-    "music": "on"
-  }
-}
+```yaml
+template: any
+seed: 4417
+music: on
 ```
 
-- `request_id`: a unique ID you generate (letters, digits and dashes). It becomes the release tag, which is how you find the result. Reusing an ID returns the existing file and doesn't render again.
-- `template`: a preset name from `library/templates/` in the repo. Read that folder to see what's available.
-- `seed`: any integer. The same template and seed always give the same workout. Use a new seed when you want variety.
+- `template`: `any` (the seed picks a template), `circuit-45`, `intervals-45` or `steady-45`. The current list is in the repo under `library/templates/`.
+- `seed`: any whole number. The same template and seed always give the same workout. Use a new seed each time for variety. If you leave it out, the issue number is used.
 - `music`: `on` or `off`.
-- Optional `plan`: a full timeline JSON (see "Custom plans" below). When you send it, the template and seed are ignored.
+- Every field is optional. An empty body gives a valid workout.
 
-A successful request returns `204 No Content`.
+Only issues opened by Noah's GitHub account start a render. If your issues show a different author, tell Noah: he can add that login to the `RENDER_REQUESTERS` repository variable.
 
-**2. Wait for it.** A render should take about 3–10 minutes. Poll every 30–60 seconds for up to 20 minutes:
+## Getting the result
+Check the issue every 5 minutes. A render usually takes 3–10 minutes.
 
-```
-GET https://api.github.com/repos/noahschmuckler/Clockwork-coach/releases/tags/<request_id>
-```
+1. A "Rendering now…" comment means it has started. If there's no comment within about 10 minutes, the request was ignored (check the title prefix and the author).
+2. **Success:** a comment starts with **Workout ready:** and links to a `clockwork-<number>.m4a` file. A table of the workout's sections follows. The issue is then closed as completed.
+3. **Failure:** a comment starts with **Render failed.** and gives the reason. The issue is closed as not planned. Fix the request and open a *new* issue. Don't retry in a loop. If the same request fails twice, tell Noah.
 
-- `404` means it isn't ready yet.
-- `200` means it's done. The response's `assets` list contains `workout.m4a`, `manifest.json` (the cue timeline) and `CREDITS.txt`.
-- To check for failure, list runs with `GET .../actions/runs?event=workflow_dispatch&per_page=10` and find the run named `render <request_id>`. If its `conclusion` is `failure`, read the job log. The validator's rejection reason is printed there in plain text. Fix the request and resend once with a new `request_id`. Don't retry in a loop.
+Send Noah the `.m4a` link and a one-line summary from the table by iMessage. Send the link, not the file: it is about 20 MB and downloads straight to his phone.
 
-**3. Deliver.** Send me the `browser_download_url` of `workout.m4a`, along with one line summarizing the plan from `manifest.json` (template, seed, and the block list). I download it on Wi-Fi before the workout and play it offline.
+Each workout is also stored permanently as a GitHub Release named `workout-<issue number>`, along with `manifest.json` (every cue with its timestamp) and `CREDITS.txt`.
 
 ## Custom plans (optional)
+Instead of a template and seed, you can lay out the blocks yourself:
 
-You may build a timeline yourself instead of using a template, but you only assemble it. You don't invent content.
+```yaml
+music: on
+plan:
+  - {block: session-open, seconds: 20}
+  - {block: march-in-place, seconds: 600}
+  - ...
+```
 
-- Use only block IDs that exist in `library/blocks/`. Each block defines the activity, its easier alternative, its cue text, its allowed duration range and its tags. The tool records the voice for whatever cue text a block contains.
-- Durations must fall inside each block's allowed range and add up to exactly 2,700 seconds, including warm-up, transitions, rest and cool-down.
-- The validator is the authority. If it rejects your plan, fix the plan. Never try to work around a rule.
-- To add or change exercises or wording, open a pull request against `library/`. I review and merge those myself. Don't render from unmerged content.
+- Only use block IDs from `library/blocks/`, and keep each block's duration inside its `seconds` range.
+- The whole plan must total exactly 2700 seconds.
+- The plan must start with at least 180 s of warm-up blocks and end with at least 180 s of cool-down blocks. Work can't run longer than 900 s without a rest.
+- The validator decides. If it rejects a plan, fix the plan.
+- You don't invent exercises or wording. To propose new blocks, open a pull request against `library/`, and Noah reviews it.
 
 ## Rules
+- **The repo is public**, so issues are visible to anyone. Never put health details, sleep or energy data, Noah's location or any credentials in an issue.
+- Open one issue per workout Noah asks for. Don't render ahead of time just in case.
+- Don't edit workflows, settings or anything outside `library/`. Library changes go through pull requests.
+- If Noah reports pain or concerning symptoms, the answer is to stop, not to send another workout.
 
-- The repo is **public**, so workflow inputs and logs are visible to anyone. Never put health details, sleep or energy data, my name, my location or credentials into inputs, plans or pull requests. (Pre-workout energy/sleep adaptation is phase 2, and it will map to a template name, not to raw data.)
-- Don't change workflows, settings, secrets or billing. The token's scope shouldn't allow it anyway.
-- One render per workout request. GitHub Actions is free for public repos, but don't batch-render speculatively.
-- If I report pain or concerning symptoms, the answer is to stop, not to make a harder workout.
-
-## Not ready yet
-
-The tool hasn't been built. I'll tell you when `render.yml` is live and give you the token then. Until then, if you want to help, draft candidate low-impact, quiet, bodyweight blocks in the schema described above (activity, easier alternative, duration range, cue lines with offsets, tags) so I can review them.
+## Current limits
+- The exercise library is a **placeholder** that Noah hasn't reviewed yet. Every result says so.
+- The voice is Piper's "norman" voice. It sounds plain but is clear.
+- Pre-workout energy and sleep inputs are a later phase.

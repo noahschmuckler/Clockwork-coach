@@ -1,0 +1,114 @@
+# PLACEHOLDER CONTENT - see warmup.yaml for the field guide. Review before use.
+
+# --- session open / close ---
+- id: session-open
+  name: ""
+  role: session
+  families: []
+  seconds: {min: 10, max: 30}
+  intro: Welcome to Clockwork Coach. This is a forty-five minute session. Keep it gentle, keep your feet quiet, and stop if anything hurts.
+  tags: {impact: low, noise: quiet, joints: []}
+
+- id: session-close
+  name: ""
+  role: session
+  families: []
+  seconds: {min: 10, max: 30}
+  intro: That's the session. Forty-five minutes, done. Good work. Have some water.
+  tags: {impact: low, noise: quiet, joints: []}
+
+# --- rest and recovery ---
+- id: rest-breathe
+  name: Rest
+  role: rest
+  families: [rest]
+  seconds: {min: 10, max: 120}
+  intro: ""
+  tags: {impact: low, noise: quiet, joints: []}
+
+- id: recovery-walk
+  name: Recovery
+  role: rest
+  families: [recovery]
+  seconds: {min: 30, max: 300}
+  intro: Easy march in place. Catch your breath.
+  tags: {impact: low, noise: quiet, joints: [knees]}
+
+# --- cool-down ---
+- id: slow-march-down
+  name: Slow march
+  role: cooldown
+  families: [cooldown]
+  seconds: {min: 30, max: 300}
+  intro: Slow it right down. Breathe in through your nose, out through your mouth.
+  tags: {impact: low, noise: quiet, joints: [knees]}
+
+- id: quad-stretch
+  name: Standing thigh stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 30, max: 120}
+  intro: Hold a wall. Bend one knee and hold your ankle or pant leg behind you.
+  easier: Rest your foot on a chair behind you instead.
+  cues:
+    - {at: half, text: Switch sides.}
+  tags: {impact: low, noise: quiet, joints: [knees]}
+
+- id: hamstring-stretch
+  name: Hamstring stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 30, max: 120}
+  intro: One heel forward, toes up. Hinge at the hips with a long, straight back.
+  cues:
+    - {at: half, text: Switch legs.}
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: calf-stretch
+  name: Wall calf stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 30, max: 120}
+  intro: Hands on the wall, one foot back, heel down.
+  cues:
+    - {at: half, text: Switch legs.}
+  tags: {impact: low, noise: quiet, joints: [ankles]}
+
+- id: chest-opener
+  name: Chest opener
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 30, max: 90}
+  intro: Clasp your hands behind you, or hold a door frame, and gently open your chest.
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+- id: shoulder-stretch
+  name: Shoulder stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 30, max: 90}
+  intro: Bring one arm across your chest and hold it with the other.
+  cues:
+    - {at: half, text: Switch arms.}
+  tags: {impact: low, noise: quiet, joints: [shoulders]}
+
+- id: side-reach-stretch
+  name: Side reach stretch
+  role: cooldown
+  families: [stretch]
+  seconds: {min: 30, max: 90}
+  intro: Reach one arm overhead and lean gently to the side.
+  cues:
+    - {at: half, text: Switch sides.}
+  tags: {impact: low, noise: quiet, joints: [back]}
+
+- id: deep-breathing
+  name: Breathing
+  role: cooldown
+  families: [breathing]
+  seconds: {min: 30, max: 300}
+  intro: Stand or sit comfortably. Breathe in for four, and out for six.
+  cues:
+    - {at: 40, text: In for four. Out for six.}
+    - {at: 90, text: Let your shoulders drop.}
+  tags: {impact: low, noise: quiet, joints: []}

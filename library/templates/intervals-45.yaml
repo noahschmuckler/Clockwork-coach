@@ -1,0 +1,29 @@
+# Longer two-minute intervals, then a shorter finisher. See circuit-45.yaml for step types.
+id: intervals-45
+description: Warm-up, two rounds of two-minute intervals, recovery, a one-round finisher, cool-down.
+sections:
+  - name: Warm-up
+    mood: warm
+    steps:
+      - {block: session-open, seconds: 20}
+      - {block: march-in-place, seconds: 120}
+      - {pick: warmup, seconds: 100, count: 3}
+  - name: Intervals
+    mood: drive
+    steps:
+      - circuit: {rounds: 2, stations: [cardio, lower, cardio, upper], work: 105, rest: 15}
+  - name: Recovery
+    mood: warm
+    steps:
+      - {block: recovery-walk, seconds: 120}
+  - name: Finisher
+    mood: drive
+    steps:
+      - circuit: {rounds: 1, stations: [core, cardio, core, cardio, lower], work: 90, rest: 30}
+  - name: Cool-down
+    mood: calm
+    steps:
+      - {block: slow-march-down, seconds: 120}
+      - {pick: stretch, seconds: 90, count: 3}
+      - {block: deep-breathing, seconds: 170}
+      - {block: session-close, seconds: 20}

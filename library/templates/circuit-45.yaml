@@ -1,0 +1,37 @@
+# Two circuits of short stations with rest between, bracketed by warm-up and cool-down.
+# Step types:
+#   {block: <id>, seconds: N}                 a specific block
+#   {pick: <family or [families]>, seconds: N, count: K}
+#                                             K different blocks chosen by the seed
+#   {circuit: {rounds: R, stations: [families], work: N, rest: N}}
+#                                             stations are chosen once, then repeated
+#                                             R times, each followed by a rest block
+# Every template must add up to exactly 2700 seconds (45:00).
+id: circuit-45
+description: Warm-up, two circuits of short stations with rest, recovery between, cool-down.
+sections:
+  - name: Warm-up
+    mood: warm
+    steps:
+      - {block: session-open, seconds: 20}
+      - {block: march-in-place, seconds: 120}
+      - {pick: warmup, seconds: 90, count: 4}
+  - name: Circuit one
+    mood: drive
+    steps:
+      - circuit: {rounds: 3, stations: [lower, upper, core, cardio], work: 45, rest: 15}
+  - name: Recovery
+    mood: warm
+    steps:
+      - {block: recovery-walk, seconds: 120}
+  - name: Circuit two
+    mood: drive
+    steps:
+      - circuit: {rounds: 3, stations: [lower, cardio, upper, core], work: 40, rest: 20}
+  - name: Cool-down
+    mood: calm
+    steps:
+      - {block: slow-march-down, seconds: 120}
+      - {pick: stretch, seconds: 90, count: 4}
+      - {block: deep-breathing, seconds: 140}
+      - {block: session-close, seconds: 20}

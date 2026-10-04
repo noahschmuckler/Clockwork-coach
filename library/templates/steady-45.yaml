@@ -1,0 +1,37 @@
+# Long single-activity blocks, then a short strength circuit. See circuit-45.yaml for step types.
+id: steady-45
+description: Warm-up, two long steady cardio blocks with recovery, a short strength circuit, cool-down.
+sections:
+  - name: Warm-up
+    mood: warm
+    steps:
+      - {block: session-open, seconds: 20}
+      - {block: march-in-place, seconds: 180}
+      - {pick: warmup, seconds: 90, count: 2}
+  - name: Steady one
+    mood: drive
+    steps:
+      - {pick: cardio, seconds: 600}
+  - name: Recovery
+    mood: warm
+    steps:
+      - {block: recovery-walk, seconds: 120}
+  - name: Steady two
+    mood: drive
+    steps:
+      - {pick: cardio, seconds: 480}
+  - name: Recovery two
+    mood: warm
+    steps:
+      - {block: recovery-walk, seconds: 120}
+  - name: Strength
+    mood: drive
+    steps:
+      - circuit: {rounds: 2, stations: [lower, upper, core], work: 60, rest: 20}
+  - name: Cool-down
+    mood: calm
+    steps:
+      - {block: slow-march-down, seconds: 120}
+      - {pick: stretch, seconds: 80, count: 3}
+      - {block: deep-breathing, seconds: 140}
+      - {block: session-close, seconds: 20}
