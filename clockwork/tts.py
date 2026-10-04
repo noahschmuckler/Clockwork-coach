@@ -32,6 +32,38 @@ def _trim(audio: np.ndarray, threshold: float = 0.01, pad: float = 0.03) -> np.n
     return audio[max(0, loud[0] - p): loud[-1] + p + 1]
 
 
+COUNTDOWN_WORD_SECONDS = 0.8  # each countdown word must fit inside its one-second slot
+
+
+def _tight_trim(audio: np.ndarray, below_peak_db: float = 30.0) -> np.ndarray:
+    """Trim breaths and tails: keep 10 ms frames within `below_peak_db` of the loudest frame."""
+    f = int(0.01 * SAMPLE_RATE)
+    n = len(audio) // f
+    if n == 0:
+        return audio
+    rms = np.sqrt(np.mean(audio[: n * f].reshape(n, f) ** 2, axis=1))
+    loud = np.flatnonzero(rms >= rms.max() * 10 ** (-below_peak_db / 20))
+    return audio[loud[0] * f: (loud[-1] + 1) * f]
+
+
+def _fit(audio: np.ndarray, seconds: float) -> np.ndarray:
+    """Speed a clip up (pitch unchanged) so it lasts at most `seconds`."""
+    if len(audio) <= seconds * SAMPLE_RATE:
+        return audio
+    tempo = len(audio) / (seconds * SAMPLE_RATE) * 1.02
+    if tempo > 2.0:
+        raise RuntimeError(f"countdown word is {len(audio) / SAMPLE_RATE:.2f}s, too long to fit in {seconds}s")
+    raw = subprocess.run(
+        ["ffmpeg", "-v", "error", "-f", "f32le", "-ar", str(SAMPLE_RATE), "-ac", "1", "-i", "-",
+         "-af", f"atempo={tempo:.4f}", "-f", "f32le", "-"],
+        input=audio.astype(np.float32).tobytes(), check=True, capture_output=True,
+    ).stdout
+    out = np.frombuffer(raw, dtype=np.float32)[: int(seconds * SAMPLE_RATE)].copy()
+    fade = min(len(out), int(0.01 * SAMPLE_RATE))
+    out[-fade:] *= np.linspace(1, 0, fade, dtype=np.float32)
+    return out
+
+
 def _read_wav(path: Path) -> np.ndarray:
     with wave.open(str(path), "rb") as wf:
         if wf.getframerate() != SAMPLE_RATE or wf.getnchannels() != 1 or wf.getsampwidth() != 2:
@@ -74,10 +106,12 @@ class Speaker:
     def countdown(self, words: list[str]) -> np.ndarray:
         """One word per second ("Five." "Four." ...), each starting exactly on its second."""
         step = SAMPLE_RATE
-        parts = [self.say(w) for w in words]
-        for w, p in zip(words, parts):
-            if len(p) > 0.9 * step:
-                raise RuntimeError(f"countdown word {w!r} takes {len(p) / step:.2f}s; it must fit in 0.9s")
+        parts = []
+        for w in words:
+            raw = self.say(w)
+            p = _fit(_tight_trim(raw), COUNTDOWN_WORD_SECONDS)
+            print(f"countdown {w!r}: {len(raw) / step:.2f}s -> {len(p) / step:.2f}s")
+            parts.append(p)
         out = np.zeros(step * (len(words) - 1) + len(parts[-1]), dtype=np.float32)
         for k, p in enumerate(parts):
             out[k * step: k * step + len(p)] = p
