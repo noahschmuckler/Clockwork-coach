@@ -4,7 +4,7 @@ Generates downloadable, exactly 45:00 workout audio tracks: a calm male voice ca
 
 ## Requesting a workout
 
-- **By issue** (how the AI agent does it): open an issue whose title starts with `render` and whose body has optional `template`, `seed` and `music` lines. The workflow comments with the download link and closes the issue. Only the repo owner, or logins in the `RENDER_REQUESTERS` repository variable, can trigger it. See [docs/agent-brief.md](docs/agent-brief.md).
+- **By issue** (how the AI agent does it): open an issue whose title starts with `render` and whose body has optional `template`, `seed` and `music` lines. The workflow comments with the download link and closes the issue. Only the repo owner, or logins in the `RENDER_REQUESTERS` repository variable, can trigger it. See [docs/agent-brief.md](docs/agent-brief.md) and [docs/CHANGELOG.md](docs/CHANGELOG.md).
 - **By hand:** Actions → render → Run workflow. This also works from the GitHub mobile app.
 
 Each result is a release named `workout-<n>` containing the `.m4a`, a `manifest.json` with every cue and timestamp, and `CREDITS.txt`.
