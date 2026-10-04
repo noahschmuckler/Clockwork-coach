@@ -1,5 +1,5 @@
 name: render
-run-name: render ${{ github.event.issue.number && format('issue #{0}', github.event.issue.number) || format('manual {0}', github.run_number) }}
+run-name: "render ${{ github.event.issue.number && format('issue #{0}', github.event.issue.number) || format('manual {0}', github.run_number) }}"
 
 # A workout is requested by opening an issue whose title starts with "render"
 # (see docs/agent-brief.md), or by hand from the Actions tab.
