@@ -21,11 +21,23 @@ The newest entry comes first. Agents should read this before using the tool afte
 - **CI** now installs ffmpeg, so the end-to-end focus tests run on GitHub.
 
 ### Verified
+- **Real render in the private repo** (`clockwork-focus` issue #1), with Piper's voice on GitHub:
+  - 54 minutes: 3 quests, a stretch break, a walk break and a wrap-up.
+  - Decodes to 3240.02 s against a 3240 s target, with 16 lines and none dropped.
+  - Countdown words came out at 0.41–0.52 s each.
+  - Without the music file uploaded, it correctly fell back to brown noise and showed a warning.
+  - About 2.5 minutes from opening the issue to the link.
 - **Local 59-minute session** (3 quests, a walk break, a stretch break and a wrap-up):
   - decodes to 3540.02 s against a 3540 s target;
   - 22 lines, none left out;
   - speech about 6–8 dB above the noise, which drops 6 dB during breaks.
 - **58 tests pass.** They cover: request validation, line placement, check-in thresholds, stretch countdowns, arc fitting (shorter and longer than the track), loop totals, and stereo end-to-end renders.
+
+### Next steps
+1. **Noah:** buy the Mind Amend session's download and attach it to the private repo's **Music library** release as `mind-amend-deep-focus.<ext>`.
+2. **Noah:** give Instinct's GitHub connector access to `clockwork-focus`, and point it at `docs/focus-brief.md` there.
+3. **Noah:** listen to `focus-1` (brown noise) to judge the voice level and check-in frequency. Once the track is in, judge the music level too.
+4. **Later:** an interactive web player (pause, skip, extend, done) if interruptions turn out to be the main problem.
 
 ## 2026-10-04: flexibility additions (v0.2)
 

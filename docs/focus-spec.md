@@ -1,6 +1,6 @@
 # Focus sessions: spec v1
 
-Status: **approved design, not yet built** (October 5, 2026). This spec refines Instinct's "Focus Block Prompter" draft, with Noah's decisions included. It is written for the coding agent that builds the tool and for Instinct, which will use it. It contains nothing personal, so it can live in this public repo.
+Status: **built and verified** (October 5, 2026). The first real session, issue #1 in `clockwork-focus`, was 54:00 exactly with 16 lines and none dropped. This spec refines Instinct's "Focus Block Prompter" draft, with Noah's decisions included. It is written for the coding agent that builds the tool and for Instinct, which will use it. It contains nothing personal, so it can live in this public repo.
 
 ## 1. What it is
 A second mode of the Clockwork Coach generator. It renders one spoken-cue audio file for each focus block. Each block is the unstructured time between meetings or after clinical work, typically 45–60 minutes, Pomodoro style, with short breaks built in.
