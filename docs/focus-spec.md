@@ -123,6 +123,13 @@ A typical 60-minute block has 2–3 quests separated by `walk` or `stretch` brea
 3. Upload it once to the private repo as an asset on a release named `music-library`. Use a release asset rather than a Git commit, because long tracks exceed Git's file limits.
 4. Register it in `music/tracks.yaml` in the private repo with: `id`, title, artist, where it was obtained, and `default: true`.
 
+**Noah's track:** "Upbeat Study Music - Deep Focus For Complex Tasks" by Jason Lewis (Mind Amend). Mind Amend makes isochronic-tone sessions: deep house or ambient music carrying a pulsing beta-range (16–20 Hz) tone. The music is sold from mindamend.com, so buy the download version of this session there.
+
+**Processing rules for brainwave tracks:**
+- **Output stereo for focus sessions** (AAC 128 kbps, with the voice in the centre). Isochronic tones survive mono, but binaural tracks don't, and the workout pipeline is mono.
+- **Never time-stretch or pitch-shift a music track.** Speed changes alter the pulse rate.
+- **Duck only while the voice is speaking.** The pulse continues underneath at a reduced level.
+
 **How a track is used:**
 - If the track is longer than the session, a seeded segment is used, so different sessions hear different parts.
 - If it's shorter, it loops with crossfades.
@@ -147,7 +154,8 @@ The result, failure and warning handling is the same as for workouts. See [`agen
 - [ ] `clockwork/focus.py` holds the quest/break planner, validator and cue generation. It reuses `cues.place`, `tts.Speaker`, `mixer` and the manifest and checks. Workout code paths are unchanged.
 - [ ] `library/focus/wording.yaml` (the three sets) and `library/focus/breaks.yaml`.
 - [ ] `python -m clockwork focus --request-file … --music-dir …` exists. Brown noise is generated with ffmpeg (`anoisesrc=color=brown`) and needs no license.
-- [ ] The music layer supports segment-or-loop, per-item level changes and a configurable duck depth.
+- [ ] The music layer supports segment-or-loop (never time-stretch), per-item level changes and a configurable duck depth.
+- [ ] Focus output is stereo (voice centred, music stereo as supplied) at AAC 128 kbps. The workout output stays mono.
 - [ ] The mixer works in chunks, so 3-hour sessions fit a private-repo runner's memory.
 - [ ] Tests cover: totals; quest boundaries landing exactly; default check-in thresholds; required lines failing loudly; dropped optional lines being reported; validator rejections (unknown fields, duplicate ids, URLs, limits); the stretch break reusing mobility blocks.
 - [ ] Private repo:
