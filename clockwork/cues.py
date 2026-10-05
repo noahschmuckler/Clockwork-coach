@@ -24,9 +24,9 @@ COUNTDOWN_SECONDS = len(COUNTDOWN_WORDS)
 
 # Lower number wins when two cues collide. start, switch and countdown are required:
 # if one can't fit the render fails rather than dropping it.
-PRIORITY = {"start": 0, "switch": 1, "countdown": 1, "heads-up": 2, "authored": 3, "easier": 4,
-            "checkpoint": 5, "minutes-left": 6}
-REQUIRED = {"start", "switch", "countdown"}
+PRIORITY = {"start": 0, "final": 0, "switch": 1, "countdown": 1, "heads-up": 2, "authored": 3,
+            "checkin": 3, "prompt": 3, "easier": 4, "checkpoint": 5, "minutes-left": 6}
+REQUIRED = {"start", "final", "switch", "countdown"}
 
 # (seconds into the session, line). Each may slide later by up to 30 s to find a gap.
 CHECKPOINTS = [
@@ -161,7 +161,8 @@ def candidates(plan: list[PlanItem]) -> list[Candidate]:
     return out
 
 
-def place(cands: list[Candidate], durations: dict[str, float]) -> tuple[list[PlacedCue], list[dict]]:
+def place(cands: list[Candidate], durations: dict[str, float],
+          total: float = TOTAL_SECONDS) -> tuple[list[PlacedCue], list[dict]]:
     """Fit cues into the timeline by priority. Returns (placed, dropped)."""
     placed: list[PlacedCue] = []
     dropped: list[dict] = []
@@ -193,18 +194,20 @@ def place(cands: list[Candidate], durations: dict[str, float]) -> tuple[list[Pla
     if errors:
         raise LibraryError("required cues do not fit; shorten their text:\n- " + "\n- ".join(errors))
     placed.sort(key=lambda p: p.time)
-    check_cues(placed)
+    check_cues(placed, total)
     return placed, dropped
 
 
-def check_cues(placed: list[PlacedCue]) -> None:
+def check_cues(placed: list[PlacedCue], total: float = TOTAL_SECONDS) -> None:
     for a, b in zip(placed, placed[1:]):
         if a.end > b.time:
             raise LibraryError(f"cue overlap at {fmt(b.time)}: '{a.text}' / '{b.text}'")
-    if placed and placed[-1].end > TOTAL_SECONDS:
-        raise LibraryError("last cue runs past 45:00")
+    if placed and placed[-1].end > total:
+        raise LibraryError(f"last cue runs past the end ({fmt(total)})")
 
 
 def fmt(seconds: float) -> str:
     s = int(seconds)
+    if s >= 3600:
+        return f"{s // 3600}:{s % 3600 // 60:02d}:{s % 60:02d}"
     return f"{s // 60:02d}:{s % 60:02d}"

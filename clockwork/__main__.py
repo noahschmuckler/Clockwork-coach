@@ -36,6 +36,15 @@ def main(argv: list[str] | None = None) -> int:
     pl.add_argument("--template", default="any")
     pl.add_argument("--seed", type=int, default=0)
 
+    f = sub.add_parser("focus", help="render a focus session from a YAML request")
+    f.add_argument("--request-file", type=Path, required=True)
+    f.add_argument("--label", default="local")
+    f.add_argument("--out", type=Path, default=Path("out"))
+    f.add_argument("--tts", choices=["piper", "espeak", "tone"], default="piper")
+    f.add_argument("--download-base", default="")
+    f.add_argument("--music-config", type=Path, help="tracks.yaml listing focus music (private repo)")
+    f.add_argument("--music-dir", type=Path, help="folder holding the music files")
+
     c = sub.add_parser("check", help="validate library and templates")
     c.add_argument("--seeds", type=int, default=200)
 
@@ -43,6 +52,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.cmd == "render":
             return _render(args)
+        if args.cmd == "focus":
+            return _focus(args)
         if args.cmd == "plan":
             lib = library.load()
             tpl = planner.choose_template(lib, args.template, args.seed)
@@ -89,6 +100,30 @@ def _render(args) -> int:
     print(f"ok: {args.out / manifest['file']} ({manifest['template']}, seed {manifest['seed']}, "
           f"{manifest['checks']['decoded_seconds']}s, {len(manifest['cues'])} cues, "
           f"{len(manifest['dropped_cues'])} dropped)")
+    return 0
+
+
+def _focus(args) -> int:
+    from . import focus
+
+    args.out.mkdir(parents=True, exist_ok=True)
+    error_file = args.out / "error.txt"
+    error_file.unlink(missing_ok=True)
+    try:
+        m = focus.render(args.request_file.read_text(), args.out, args.label, args.tts, args.download_base,
+                         args.music_config, args.music_dir)
+    except LibraryError as exc:
+        error_file.write_text(str(exc) + "\n")
+        print(f"rejected: {exc}", file=sys.stderr)
+        return 2
+    except Exception as exc:
+        error_file.write_text(f"render failed: {exc}\n")
+        traceback.print_exc()
+        return 1
+    print(f"ok: {args.out / m['file']} ({m['total_seconds'] // 60} min, sound {m['sound_used']}, "
+          f"{m['checks']['decoded_seconds']}s, {len(m['cues'])} lines, {len(m['dropped_cues'])} left out)")
+    for w in m["warnings"]:
+        print(f"warning: {w}")
     return 0
 
 

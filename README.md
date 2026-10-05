@@ -25,6 +25,14 @@ request → template + seed → plan (validated: exactly 2700 s, warm-up and coo
 - `library/music/tracks.yaml` lists the music tracks, which are downloaded at render time.
 - `clockwork/` contains the generator.
 
+## Focus sessions
+
+A second mode makes spoken-timer audio for focused work blocks: quests with time checks, built-in walk/stretch/water/breathing breaks, and brown noise or a personal focus track underneath (stereo, never time-stretched; tracks with a ramp arc keep it intact). Requests and outputs live in a private repo; this repo holds the code. See [docs/focus-spec.md](docs/focus-spec.md).
+
+```
+python -m clockwork focus --request-file session.yaml --out out [--music-config tracks.yaml --music-dir music/]
+```
+
 ## Local use (optional)
 
 ```

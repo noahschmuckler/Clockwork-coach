@@ -17,7 +17,11 @@ jobs:
         with:
           python-version: "3.11"
           cache: pip
-      - run: pip install -r requirements.txt pytest
+      - name: Install ffmpeg and Python packages
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg
+          pip install -r requirements.txt pytest
       - name: Validate library and templates
         run: python -m clockwork check
       - run: python -m pytest -q

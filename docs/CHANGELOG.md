@@ -2,6 +2,31 @@
 
 The newest entry comes first. Agents should read this before using the tool after an update. Usage rules are in [`agent-brief.md`](agent-brief.md).
 
+## 2026-10-05: focus sessions (v0.3)
+
+### What changed
+- **New mode `python -m clockwork focus`**, built to [`focus-spec.md`](focus-spec.md):
+  - Quests and breaks (`walk`, `stretch`, `water`, `breathe`), with "Time's up" transitions. The audio never says a quest is done.
+  - Default check-ins: halfway on quests of 20 minutes or more, and "five minutes left" on quests of 15 minutes or more.
+  - Custom check-ins (`halfway`, `left:N`, `in:N`) and prompts.
+  - Three wording sets: light, normal and firm.
+- **Stretch breaks reuse the workout library's 60 s mobility blocks,** with their exact switches and countdowns.
+- **Sound:**
+  - Generated brown noise.
+  - A personal track from the private repo, in stereo at 44.1 kHz and never time-stretched.
+  - Tracks with an `arc` (ramp-up and ramp-down, like Mind Amend sessions) always start at their beginning and end exactly at the session's end. Only the steady middle is trimmed or extended, by crossfades.
+- **Long sessions:** the session is mixed in 10 s chunks, so a 3-hour session fits a small runner.
+- **Engine:** cue placement now takes any total length, not only 45:00.
+- **Workouts:** no changes.
+- **CI** now installs ffmpeg, so the end-to-end focus tests run on GitHub.
+
+### Verified
+- **Local 59-minute session** (3 quests, a walk break, a stretch break and a wrap-up):
+  - decodes to 3540.02 s against a 3540 s target;
+  - 22 lines, none left out;
+  - speech about 6–8 dB above the noise, which drops 6 dB during breaks.
+- **58 tests pass.** They cover: request validation, line placement, check-in thresholds, stretch countdowns, arc fitting (shorter and longer than the track), loop totals, and stereo end-to-end renders.
+
 ## 2026-10-04: flexibility additions (v0.2)
 
 ### What changed

@@ -1,0 +1,40 @@
+# Fixed wording for focus sessions, chosen by the request's `intensity`.
+# Placeholders: {prev} {next} {name} {brief} {n} {break} {quests} {quest_word} {minutes}
+# Keep every line short: start and transition lines are required, and a line
+# that can't fit inside its slot fails the render.
+light:
+  opening: "Focus session. {quests} {quest_word}, {minutes} minutes. First: {next}."
+  next: "Time's up for {prev}. When you're ready, move to {next}."
+  to_break: "Time's up for {prev}. {break}"
+  back: "Welcome back. When you're ready: {next}."
+  halfway: "About halfway through {name}."
+  left: "About {n} minutes left on {name}."
+  left_one: "About a minute left on {name}."
+  elapsed: "{n} minutes into {name}."
+  to_wrap_up: "Time's up for {prev}. Time to wrap up. Save your work and note your next step."
+  wrap_up: "Time to wrap up. Save your work and note your next step."
+  final: "Session complete. Nice work."
+normal:
+  opening: "Focus session. {quests} {quest_word}, {minutes} minutes. First: {next}."
+  next: "Time's up for {prev}. Next: {next}."
+  to_break: "Time's up for {prev}. {break}"
+  back: "Back to work. Next: {next}."
+  halfway: "Halfway through {name}."
+  left: "{n} minutes left on {name}."
+  left_one: "One minute left on {name}."
+  elapsed: "{n} minutes into {name}."
+  to_wrap_up: "Time's up for {prev}. Wrap up. Save your work and write down your next step."
+  wrap_up: "Wrap up. Save your work and write down your next step."
+  final: "Session complete."
+firm:
+  opening: "Focus session. {quests} {quest_word}, {minutes} minutes. Start now: {next}."
+  next: "Time. Close out {prev} now. Next: {next}."
+  to_break: "Time. Close out {prev}. {break}"
+  back: "Break's over. Next: {next}. Start now."
+  halfway: "Halfway through {name}. Check your pace."
+  left: "{n} minutes. Start wrapping up {name}."
+  left_one: "One minute. Finish {name}."
+  elapsed: "{n} minutes into {name}."
+  to_wrap_up: "Time. Close out {prev}. Wrap up: save your work and write down your next step."
+  wrap_up: "Wrap up: save your work and write down your next step."
+  final: "Session complete."

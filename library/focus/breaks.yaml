@@ -1,0 +1,28 @@
+# Built-in break types for focus sessions.
+#   intro     spoken at the start of the break ({n} = minutes, as a word)
+#   lines     extra lines; at = seconds from the start, negative = from the end.
+#             A line landing in the first 30 s of the break is skipped.
+#   music_db  music level change during the break (0 = same as work time)
+#   stretch   true: fill the break with 60 s mobility blocks from the workout
+#             library (one per minute), each with its switch and countdown
+walk:
+  intro: "{N}-minute break. Stand up, walk, and refill your water."
+  lines:
+    - {at: -60, text: "One minute. Head back."}
+  music_db: -6
+water:
+  intro: "{N}-minute break. Stand up, drink some water, and look at something far away."
+  lines:
+    - {at: -60, text: "One minute. Head back."}
+  music_db: -6
+stretch:
+  intro: "{N}-minute stretch break."
+  stretch: true
+  music_db: -6
+breathe:
+  intro: "{N}-minute breathing break. Breathe in for four, and out for six."
+  lines:
+    - {at: 40, text: "In for four. Out for six."}
+    - {at: 100, text: "Let your shoulders drop."}
+    - {at: -60, text: "One minute. Get ready to head back."}
+  music_db: -12
