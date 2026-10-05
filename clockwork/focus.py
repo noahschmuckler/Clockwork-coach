@@ -60,6 +60,7 @@ NOISE_SECONDS = 180
 REQUEST_KEYS = {"block_start", "intensity", "sound", "items", "wrap_up_minutes", "seed"}
 QUEST_KEYS = {"quest", "say", "minutes", "brief", "checkins", "prompts"}
 BREAK_KEYS = {"break", "minutes"}
+AUDIO_EXTS = {".mp3", ".m4a", ".aac", ".wav", ".flac", ".ogg", ".opus"}
 TRACK_KEYS = {"id", "title", "artist", "file", "source", "default", "arc"}
 _URL = re.compile(r"https?://|www\.|\.(com|org|net|io|ly)\b", re.I)
 _CTRL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f]")
@@ -595,6 +596,10 @@ def resolve_sound(sound: str, tracks: list[dict], music_dir: Path | None) -> tup
             raise LibraryError(f"unknown sound '{sound}'. Available: default, noise, off"
                                + "".join(f", {t['id']}" for t in tracks))
     path = (music_dir / track["file"]) if music_dir else None
+    if path is not None and not path.exists():
+        # Accept the same name with any audio extension (.mp3, .m4a, .wav, ...).
+        stem = Path(track["file"]).stem
+        path = next((p for p in sorted(music_dir.glob(stem + ".*")) if p.suffix.lower() in AUDIO_EXTS), path)
     if path is None or not path.exists():
         return None, [f"the music file for '{track['id']}' isn't uploaded yet; using brown noise"]
     return {**track, "path": path}, []

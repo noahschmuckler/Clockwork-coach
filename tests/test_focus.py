@@ -209,3 +209,10 @@ def test_render_with_arc_track(tmp_path):
     assert abs(segs[-1]["src"] + segs[-1]["seconds"] - 840) < 0.01
     assert abs(segs[-1]["dst"] + segs[-1]["seconds"] - 780) < 0.01
     assert m["sound_used"] == "Test track"
+
+
+def test_track_file_any_extension(tmp_path):
+    (tmp_path / "t.yaml").write_text("- {id: deep, file: deep.mp3, default: true}\n")
+    (tmp_path / "deep.m4a").write_bytes(b"x")
+    track, warnings = focus.resolve_sound("default", focus.load_tracks(tmp_path / "t.yaml"), tmp_path)
+    assert warnings == [] and track["path"].name == "deep.m4a"
